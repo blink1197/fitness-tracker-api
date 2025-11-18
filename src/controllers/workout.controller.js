@@ -68,3 +68,27 @@ export const updateWorkout = async (req, res, next) => {
         next(error);
     }
 };
+
+export const deleteWorkout = async (req, res, next) => {
+    try {
+        const { workoutId } = req.params;
+        const userId = req.user.id;
+
+        // Find and delete only if the workout belongs to the user
+        const deletedWorkout = await Workout.findOneAndDelete({
+            _id: workoutId,
+            userId
+        });
+
+        if (!deletedWorkout) {
+            throw new AppError("Workout not found or unauthorized", 404);
+        }
+
+        res.status(200).json({
+            message: "Workout deleted successfully",
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
