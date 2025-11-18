@@ -92,3 +92,26 @@ export const deleteWorkout = async (req, res, next) => {
         next(error);
     }
 };
+
+export const completeWorkout = async (req, res, next) => {
+    try {
+        const { workoutId } = req.params;
+        const userId = req.user.id;
+
+        // Find workout
+        const workout = await Workout.findOne({ _id: workoutId, userId });
+        if (!workout) throw new AppError("Workout not found or unauthorized", 404);
+
+        // Update workout status
+        workout.status = "completed";
+        await workout.save();
+
+        res.status(200).json({
+            message: "Workout status updated successfully",
+            updatedWorkout: workout._doc
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
