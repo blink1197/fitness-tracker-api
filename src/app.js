@@ -2,6 +2,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { errorHandler } from "./middleware/errorHandler.js";
+import userRoutes from "./routes/user.routes.js";
+
+
 dotenv.config();
 
 
@@ -18,11 +21,9 @@ app.use(    // Allow access from anywhere for now
 );
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.status(200).send('Hello World!');
-})
-// Routes
 
+// Routes
+app.use("/users", userRoutes);
 
 
 // Global Error Handler
