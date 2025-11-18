@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { createAccessToken } from "../middleware/auth.js";
 import User from "../models/user.model.js";
 import AppError from "../utils/AppError.js";
 
@@ -29,6 +30,28 @@ export const registerUser = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+}
 
+export const loginUser = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
 
+        // Input validation
+        if (!email || !password) throw new AppError("Missing required fields", 400);
+
+        // Check if email exists
+        const user = await User.findOne({ email });
+        if (!user) throw new AppError("Email not found", 404);
+
+        // Check if passwords match
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) throw new AppError("Email and password does not match", 401);
+
+        // Send access token
+        const token = createAccessToken(user);
+        res.status(200).json({ access: token })
+
+    } catch (error) {
+        next(error);
+    }
 }
