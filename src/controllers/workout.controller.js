@@ -27,3 +27,17 @@ export const addWorkout = async (req, res, next) => {
         next(error)
     }
 }
+
+export const getWorkouts = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const workouts = await Workout.find({ userId });
+        if (!workouts) throw new AppError("No workouts found", 404);
+
+        res.status(200).json({ workouts });
+
+    } catch (error) {
+        next(error)
+    }
+}
