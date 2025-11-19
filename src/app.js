@@ -27,6 +27,11 @@ app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/workouts", workoutRoutes);
 
+// For UptimeRobot Monitoring DO NOT DELETE
+app.get('/ping', (req, res) => {
+    res.status(200).json({ status: 'ok', time: new Date().toISOString() });
+});
+
 
 // Global Error Handler
 app.use(errorHandler);
